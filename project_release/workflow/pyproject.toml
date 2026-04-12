@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cbma-workflow"
+version = "0.1.0"
+description = "Workflow-first CLI skeleton for codebook-driven multimodal analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "OpenAI Codex" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+ui = [
+  "fastapi>=0.115",
+  "jinja2>=3.1",
+  "python-multipart>=0.0.9",
+  "uvicorn>=0.30",
+]
+
+[project.scripts]
+cbma = "cbma.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"cbma.ui_api" = ["templates/*.html", "static/*.css"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

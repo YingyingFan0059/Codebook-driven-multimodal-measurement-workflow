@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-grid">
+  <article class="panel-card span-two">
+    <div class="panel-head">
+      <p class="panel-kicker">Run Ledger</p>
+      <h4>Captured metadata</h4>
+    </div>
+    {% if snapshot.runs %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Run</th>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Metadata path</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in snapshot.runs %}
+          <tr>
+            <td>{{ run.run_name }}</td>
+            <td>{{ run.run_type }}</td>
+            <td>{{ run.model_name or "n/a" }}</td>
+            <td><code>{{ run.metadata_path }}</code></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No runs discovered yet.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

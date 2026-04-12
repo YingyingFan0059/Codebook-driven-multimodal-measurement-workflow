@@ -1,0 +1,43 @@
+{
+  "project_name": "cbma_demo",
+  "schema_version": 1,
+  "paths": {
+    "labels": "data/labels.csv",
+    "codebook": "data/codebook.yaml",
+    "videos_dir": "data/videos",
+    "splits_dir": "splits/split_v1",
+    "cache_dir": "cache",
+    "models_dir": "models",
+    "runs_dir": "runs",
+    "exports_dir": "exports"
+  },
+  "defaults": {
+    "model": "qwen2-vl-7b-instruct",
+    "baselines": [
+      "zeroshot",
+      "rule"
+    ],
+    "baseline": {
+      "backend": "qwen2_legacy",
+      "script": "auto",
+      "test_csv": "test_main.csv"
+    },
+    "split_strategy": {
+      "mode": "explicit",
+      "train": 0.7,
+      "val": 0.1,
+      "test": 0.2,
+      "seed": 42
+    },
+    "training": {
+      "candidate_n": [
+        5
+      ],
+      "selection_metric": "macro_f1",
+      "selection_rule": {
+        "type": "min_within_delta_of_best",
+        "delta": 0.01
+      }
+    }
+  }
+}

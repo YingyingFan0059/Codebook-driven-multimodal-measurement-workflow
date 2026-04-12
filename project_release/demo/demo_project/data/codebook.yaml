@@ -1,0 +1,30 @@
+{
+  "task_name": "cbma_demo_5class",
+  "labels": [
+    {
+      "id": 0,
+      "name": "Other",
+      "definition": "Fallback class for content that does not support a stronger category assignment."
+    },
+    {
+      "id": 1,
+      "name": "Performative",
+      "definition": "Concrete mission execution or public-facing institutional performance."
+    },
+    {
+      "id": 2,
+      "name": "Moral",
+      "definition": "Affective or symbolic messaging centered on values, sacrifice, or patriotic sentiment."
+    },
+    {
+      "id": 3,
+      "name": "Procedural",
+      "definition": "Rules, ceremony, order, hierarchy, or institutional ritual."
+    },
+    {
+      "id": 4,
+      "name": "Technical",
+      "definition": "Weapons, tactics, technical capability, or professional military skill."
+    }
+  ]
+}

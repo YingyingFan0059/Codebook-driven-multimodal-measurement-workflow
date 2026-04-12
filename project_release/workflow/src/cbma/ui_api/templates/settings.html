@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-grid">
+  <article class="panel-card span-two">
+    <div class="panel-head">
+      <p class="panel-kicker">Project Settings</p>
+      <h4>Resolved paths</h4>
+    </div>
+    <dl class="path-list">
+      {% for key, value in snapshot.paths.items() %}
+      <div><dt>{{ key }}</dt><dd><code>{{ value }}</code></dd></div>
+      {% endfor %}
+    </dl>
+  </article>
+  <article class="panel-card">
+    <div class="panel-head">
+      <p class="panel-kicker">Defaults</p>
+      <h4>Runtime assumptions</h4>
+    </div>
+    <pre>{{ snapshot.defaults }}</pre>
+  </article>
+</section>
+{% endblock %}

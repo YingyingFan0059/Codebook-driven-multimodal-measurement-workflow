@@ -1,0 +1,14 @@
+﻿# Curated dependencies for the Qwen2 release package.
+# For exact historical environments, see env_record/qwen2_vl/ and env_record/internvl/.
+
+accelerate==1.13.0
+numpy==1.26.4
+pandas==2.2.3
+peft==0.18.1
+Pillow==10.1.0
+qwen-vl-utils==0.0.14
+scikit-learn==1.7.2
+torch==2.10.0
+torchvision==0.25.0
+tqdm==4.67.3
+transformers==4.45.2

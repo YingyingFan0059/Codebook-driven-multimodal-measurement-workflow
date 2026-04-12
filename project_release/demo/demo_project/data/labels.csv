@@ -1,0 +1,11 @@
+﻿video_id,video_path,label,split
+0001,dummy_0001.mp4,0,train
+0002,dummy_0002.mp4,1,train
+0003,dummy_0003.mp4,2,train
+0004,dummy_0004.mp4,3,train
+0005,dummy_0005.mp4,4,train
+0006,dummy_0006.mp4,0,test
+0007,dummy_0007.mp4,1,test
+0008,dummy_0008.mp4,2,test
+0009,dummy_0009.mp4,3,test
+0010,dummy_0010.mp4,4,test

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Editorial control room</p>
+    <h3>Keep the workflow legible before you make it automatic.</h3>
+    <p>This first screen favors clear state, strong hierarchy, and a small set of local actions over a generic admin dashboard.</p>
+  </div>
+  <div class="hero-panel">
+    <div class="hero-stat">
+      <span class="stat-label">Labels</span>
+      <strong>{{ snapshot.labels.count or 0 }}</strong>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-label">Codebook labels</span>
+      <strong>{{ snapshot.codebook.label_count or 0 }}</strong>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-label">Split sizes</span>
+      <strong>{{ snapshot.split.sizes|length }}</strong>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-label">Recent runs</span>
+      <strong>{{ snapshot.runs|length }}</strong>
+    </div>
+  </div>
+</section>
+
+<section class="status-grid">
+  {% for card in snapshot.status_cards %}
+  <article class="status-card tone-{{ card.tone }}">
+    <p class="card-kicker">{{ card.title }}</p>
+    <h4>{{ card.value }}</h4>
+    <p>{{ card.detail }}</p>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="dashboard-grid">
+  <article class="panel-card">
+    <div class="panel-head">
+      <p class="panel-kicker">Quick Actions</p>
+      <h4>Operational checks</h4>
+    </div>
+    <div class="action-grid">
+      {% for action in snapshot.actions %}
+      <form method="post" action="/actions/{{ action.name }}">
+        <input type="hidden" name="redirect_to" value="{% if action.name == 'split-create' %}split{% elif action.name == 'baseline-dryrun' %}baseline{% elif action.name == 'train-sweep-dryrun' %}train{% else %}dashboard{% endif %}">
+        <button class="action-button" type="submit">{{ action.label }}</button>
+      </form>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="panel-card">
+    <div class="panel-head">
+      <p class="panel-kicker">Input Surface</p>
+      <h4>Data snapshot</h4>
+    </div>
+    <dl class="data-list">
+      <div><dt>Task</dt><dd>{{ snapshot.codebook.task_name or "Not set" }}</dd></div>
+      <div><dt>Labels rows</dt><dd>{{ snapshot.labels.count or 0 }}</dd></div>
+      <div><dt>Label ids</dt><dd>{{ snapshot.labels.labels or [] }}</dd></div>
+      <div><dt>Split dir</dt><dd>{{ snapshot.paths.splits_dir or "Not resolved" }}</dd></div>
+    </dl>
+  </article>
+
+  <article class="panel-card span-two">
+    <div class="panel-head">
+      <p class="panel-kicker">Run Ledger</p>
+      <h4>Latest workflow artifacts</h4>
+    </div>
+    {% if snapshot.runs %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Run</th>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Metadata</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in snapshot.runs[:6] %}
+          <tr>
+            <td>{{ run.run_name }}</td>
+            <td>{{ run.run_type }}</td>
+            <td>{{ run.model_name or "n/a" }}</td>
+            <td><code>{{ run.metadata_path }}</code></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No run metadata yet. Once the user triggers a dry-run or real run, the ledger appears here.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

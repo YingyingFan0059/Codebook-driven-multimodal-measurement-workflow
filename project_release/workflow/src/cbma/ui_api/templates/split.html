@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-grid">
+  <article class="panel-card">
+    <div class="panel-head">
+      <p class="panel-kicker">Split Builder</p>
+      <h4>Current split state</h4>
+    </div>
+    {% if snapshot.split.summary %}
+    <dl class="data-list">
+      <div><dt>Mode</dt><dd>{{ snapshot.split.summary.mode }}</dd></div>
+      <div><dt>Train</dt><dd>{{ snapshot.split.summary.train_count }}</dd></div>
+      <div><dt>Val</dt><dd>{{ snapshot.split.summary.val_count }}</dd></div>
+      <div><dt>Test</dt><dd>{{ snapshot.split.summary.test_count }}</dd></div>
+    </dl>
+    {% else %}
+    <p class="empty-state">No split summary found yet.</p>
+    {% endif %}
+  </article>
+  <article class="panel-card">
+    <div class="panel-head">
+      <p class="panel-kicker">Nested train sizes</p>
+      <h4>Available subsets</h4>
+    </div>
+    <p class="size-list">{{ snapshot.split.sizes or [] }}</p>
+    <form method="post" action="/actions/split-create">
+      <input type="hidden" name="redirect_to" value="split">
+      <button class="action-button" type="submit">Create Split</button>
+    </form>
+  </article>
+</section>
+{% endblock %}

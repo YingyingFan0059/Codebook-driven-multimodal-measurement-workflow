@@ -1,0 +1,13 @@
+runs/
+cache/
+models/
+exports/
+outputs/
+*.log
+*.tmp
+__pycache__/
+*.pyc
+*.pt
+*.bin
+*.safetensors
+Qwen2/archive/raw_bundles/

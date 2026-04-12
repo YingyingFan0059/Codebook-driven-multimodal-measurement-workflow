@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }} | CBMA</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='app.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-kicker">CBMA</div>
+        <h1 class="brand-title">Research Workflow Console</h1>
+        <p class="brand-copy">A thin local surface for codebook-driven multimodal analysis.</p>
+      </div>
+      <nav class="side-nav">
+        {% for item in nav_items %}
+        <a href="{{ item.href }}" class="nav-link {% if current_page == item.key %}is-active{% endif %}">{{ item.label }}</a>
+        {% endfor %}
+      </nav>
+      <div class="project-chip">
+        <span class="chip-label">Project Root</span>
+        <code>{{ project_root }}</code>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="topbar-kicker">{{ snapshot.project_name }}</p>
+          <h2 class="topbar-title">{{ page_title }}</h2>
+        </div>
+        <div class="topbar-meta">
+          <span class="meta-pill">Workflow-first</span>
+          <span class="meta-pill">Local only</span>
+        </div>
+      </header>
+
+      {% if action_result %}
+      <section class="action-result action-{{ action_result.status }}">
+        <div class="action-header">
+          <strong>{{ action_result.label }}</strong>
+          <span>exit {{ action_result.exit_code }}</span>
+        </div>
+        <pre>{{ action_result.output }}</pre>
+      </section>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
