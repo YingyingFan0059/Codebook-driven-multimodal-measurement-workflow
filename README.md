@@ -1,59 +1,91 @@
 ﻿# CBMA
 
-CBMA is a codebook-driven multimodal analysis workflow for reproducible research.
+Codebook-driven multimodal analysis workflow for reproducible research.  
+面向可复现研究的、由 codebook 驱动的多模态分析工作流。
 
-CBMA is organized as a lightweight, offline, local-first research toolkit rather than a hosted AI product. It is intended for social science, communication, and multimodal research workflows that need explicit data structure, controlled evaluation, and filesystem-based reproducibility.
+## Overview / 概述
 
-## What CBMA Covers
+CBMA is a lightweight, offline, local-first research toolkit. It is designed for researchers who need a reproducible workflow for codebook-based multimodal analysis, rather than a hosted AI product or an online service.
 
-- Workflow pipeline for project setup, validation, split generation, baseline dry-run, training sweep dry-run, standardized evaluation, and report export
-- Decision handoff through a `recommend_n.json` artifact for turning scaling results into a final evaluation choice
-- CLI generation of `recommend_n.json` via `cbma train recommend-n`
-- Standardized evaluation protocol via `cbma eval run`
-- Structured report export via `cbma report build`
+CBMA 是一个轻量、离线、local-first 的研究工具包。它面向需要做 codebook-based multimodal analysis 的研究者，强调可复现流程，而不是在线产品或托管式 AI 服务。
 
-## Who This Is For
+## Core Capabilities / 核心能力
 
-- Social science researchers working with codebooks and labeled media
-- Communication and propaganda researchers working with short video data
-- Multimodal researchers who want a reproducible offline workflow rather than a web product
+- Project initialization, validation, and split generation  
+  项目初始化、数据校验与划分生成
+- Baseline dry-run and train sweep dry-run  
+  baseline dry-run 与训练规模 sweep dry-run
+- `recommend_n.json` generation through `cbma train recommend-n`  
+  通过 `cbma train recommend-n` 生成 `recommend_n.json`
+- Standardized evaluation through `cbma eval run`  
+  通过 `cbma eval run` 执行标准化评估
+- Structured report export through `cbma report build`  
+  通过 `cbma report build` 导出结构化报告
 
-## Execution Model
+## Intended Users / 适用对象
 
-- Offline execution
-- Local filesystem outputs
-- User-managed GPU environments for real inference and training, such as AutoDL
-- No cloud dependency
-- No hosted API dependency
+- Social science researchers  
+  社会科学研究者
+- Communication and media researchers  
+  传播学、媒体研究者
+- Multimodal researchers working with labeled video data  
+  处理标注视频数据的多模态研究者
 
-Local development, validation, dry-run, and report construction can be done without a GPU. Real baseline inference, real training, and real evaluation still require a user-provided local model path and a suitable runtime.
+## Execution Model / 运行方式
 
-## Minimal Flow
+- Offline execution  
+  离线运行
+- Local filesystem outputs  
+  结果写入本地文件系统
+- User-managed GPU environments for real inference and training, such as AutoDL  
+  真实推理和训练依赖用户自管 GPU 环境，例如 AutoDL
+- No cloud dependency  
+  不依赖云服务
+- No hosted API dependency  
+  不依赖托管 API
 
-1. Initialize or prepare a local project.
-2. Validate codebook, labels, and file paths.
-3. Create split artifacts.
-4. Run baseline and train sweep in `--dry-run` mode to verify wiring.
-5. Produce or provide a `recommend_n.json` decision artifact.
-6. Run standardized evaluation on the fixed test split.
-7. Export a structured report from the eval directory.
+You can do project setup, validation, dry-run, and report building without a GPU. Real model inference, real LoRA training, and standardized evaluation still require a user-provided local model path and a suitable runtime.
 
-## Included Demo
+你可以在没有 GPU 的情况下完成项目初始化、校验、dry-run 和 report 构建。真正的模型推理、LoRA 训练和标准化评估仍然需要用户自行提供本地模型路径和合适的运行环境。
 
-The smallest release demo lives in `project_release/demo/`.
+## Workflow / 工作流
 
-It is designed for a no-GPU environment and includes:
+1. Initialize or prepare a local project.  
+   初始化或准备本地项目。
+2. Validate the codebook, labels, and file paths.  
+   校验 codebook、标签文件和路径。
+3. Create split artifacts.  
+   生成数据划分产物。
+4. Run baseline and train sweep in `--dry-run` mode to verify wiring.  
+   先用 `--dry-run` 检查 baseline 和 train sweep 是否接通。
+5. Generate `recommend_n.json`.  
+   生成 `recommend_n.json`。
+6. Run standardized evaluation on the fixed test split.  
+   在固定 test split 上做标准化评估。
+7. Export a report from the eval directory.  
+   从 eval 目录导出报告。
 
-- a synthetic demo project
-- fake labels and placeholder video files
-- a minimal eval directory for `report build`
-- a documented dry-run path
+## Demo / 演示
 
-Start with `project_release/demo/README.md`.
+The smallest release demo is located in `project_release/demo/`.
 
-## No-GPU Quickstart
+最小可运行 demo 位于 `project_release/demo/`。
 
-Install the workflow package from `project_release/workflow`, then run the included demo:
+It includes:
+
+- a synthetic demo project  
+  一个合成的 demo 项目
+- fake labels and placeholder video files  
+  虚拟标签与占位视频文件
+- a synthetic train-sweep sample and eval sample  
+  合成的 train-sweep sample 与 eval sample
+- a no-GPU walkthrough  
+  一条不依赖 GPU 的演示路径
+
+Start with `project_release/demo/README.md`.  
+入口请先看 `project_release/demo/README.md`。
+
+## No-GPU Quickstart / 无 GPU 快速开始
 
 ```bash
 cd project_release/workflow
@@ -67,9 +99,11 @@ cbma train recommend-n --project ../demo/demo_project --run-dir ../demo/demo_pro
 cbma report build --project ../demo/demo_project
 ```
 
-This path does not run a model. It validates the project shape, produces split artifacts, writes dry-run metadata, and builds a report from the included synthetic eval inputs.
+This path does not run a real model. It validates the project structure, produces split artifacts, verifies dry-run metadata, regenerates `recommend_n.json`, and builds a report from synthetic eval inputs.
 
-## Full Workflow In A User-Managed GPU Environment
+这条路径不会运行真实模型。它会校验项目结构、生成 split、验证 dry-run 元数据、重新生成 `recommend_n.json`，并基于合成 eval 输入生成报告。
+
+## Full Workflow / 完整流程
 
 ```bash
 cbma init my_project
@@ -82,9 +116,11 @@ cbma eval run --project my_project --run-dir <runs_dir>/train-sweep-...
 cbma report build --project my_project
 ```
 
-## Output Shape
+## Output Structure / 输出结构
 
 `cbma report build` writes a standardized report directory under an eval run:
+
+`cbma report build` 会在某个 eval run 下写出标准化报告目录：
 
 ```text
 <runs_dir>/
@@ -100,7 +136,7 @@ cbma report build --project my_project
       error_cases.csv           # optional
 ```
 
-Example report excerpt:
+Example / 示例：
 
 ```markdown
 # CBMA Evaluation Report
@@ -116,40 +152,53 @@ unavailable
 - confusion matrix: unavailable
 ```
 
-The `unavailable` state is expected when the underlying eval output does not provide richer raw artifacts.
+The `unavailable` state is expected when richer raw eval artifacts are not available.  
+如果底层没有提供更丰富的 raw eval 产物，报告里出现 `unavailable` 是正常的。
 
-## Environment Notes
-
-- No GPU required for `init`, `validate`, `split`, dry-run commands, or `report build`
-- A GPU is typically required for real baseline inference, real LoRA training, and real standardized evaluation
-- AutoDL or another user-managed GPU host is the expected environment for model execution
-
-## Open-Source Boundaries
+## Open-Source Boundaries / 开源边界
 
 CBMA does not provide:
 
-- source videos
-- platform scraping
-- model weights
-- automatic model download
-- an online service
+- source videos  
+  原始视频不随仓库提供
+- platform scraping  
+  不提供平台抓取
+- model weights  
+  不提供模型权重
+- automatic model download  
+  不自动下载模型
+- an online service  
+  不提供在线服务
 
 Users are expected to provide:
 
-- their own local data
-- their own local model path
-- their own GPU environment when running real inference or training
+- their own local data  
+  用户自行提供本地数据
+- their own local model path  
+  用户自行提供本地模型路径
+- their own GPU environment for real inference or training  
+  用户自行提供真实推理与训练所需的 GPU 环境
 
-## Current Limits
+## Current Limits / 当前限制
 
-- Eval provenance may be partially unavailable when the upstream eval outputs are sparse
-- `raw_eval` enhancement depends on whatever the backend eval script actually produced
-- Archived research directories remain in the repository for context, but they are not part of the V1 workflow core
+- `recommend-n` requires validation metrics already materialized in the sweep run directory  
+  `recommend-n` 依赖 train-sweep run 目录中已经存在的验证指标聚合文件
+- Eval provenance may be partially unavailable if upstream outputs are sparse  
+  如果上游 eval 输出较少，追溯信息可能部分缺失
+- `raw_eval` enhancement depends on whatever the backend eval script actually produced  
+  `raw_eval` 增强分析依赖底层 eval 脚本到底产出了什么
+- Archived research directories remain for context, but they are not part of the maintained V1 core  
+  仓库里保留了研究归档目录作上下文参考，但它们不属于当前维护的 V1 core
 
-## Repository Map
+## Repository Map / 仓库结构
 
-- `project_release/workflow/`: maintained CLI core
-- `project_release/demo/`: synthetic release demo
-- `project_release/qwen2/`: backend release scripts plus reproducibility appendix
-- `project_release/qwen3/`: archived research assets
-- `Qwen2/` and `Qwen3/`: legacy research directories retained as archive context
+- `project_release/workflow/`: maintained CLI core  
+  当前维护的 CLI 核心
+- `project_release/demo/`: synthetic release demo  
+  合成 release demo
+- `project_release/qwen2/`: backend release scripts plus reproducibility appendix  
+  qwen2 后端脚本与复现附录
+- `project_release/qwen3/`: archived research assets  
+  归档研究资产
+- `Qwen2/` and `Qwen3/`: legacy research directories retained for archive context  
+  保留作历史归档上下文的旧研究目录

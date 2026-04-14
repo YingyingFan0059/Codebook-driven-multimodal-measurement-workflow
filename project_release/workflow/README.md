@@ -1,10 +1,19 @@
 ﻿# CBMA Workflow Core
 
-This directory contains the maintained CLI core of CBMA V1.
+Maintained CLI core of CBMA V1.  
+CBMA V1 当前维护中的 CLI 核心。
 
-The workflow layer is the primary interface. It is designed for offline execution, local filesystem outputs, and reproducible handoff across project setup, split generation, dry-run planning, evaluation, and reporting. The local UI is frozen and not part of the V1 core surface.
+## Overview / 概述
 
-## Current Command Surface
+This directory contains the main workflow layer of CBMA. It is the primary interface for project setup, validation, split generation, dry-run planning, recommendation handoff, evaluation, and report building.
+
+本目录包含 CBMA 的主工作流层。它是当前项目初始化、数据校验、划分生成、dry-run 规划、recommendation 交接、评估和报告构建的主要入口。
+
+The workflow layer is designed for offline execution, local filesystem outputs, and reproducible handoff between stages. The local UI is frozen and is not part of the maintained V1 core.
+
+workflow 层强调离线执行、本地文件系统输出，以及阶段之间可追溯的交接。仓库中的本地 UI 已被冻结，不属于当前维护的 V1 core。
+
+## Current Command Surface / 当前命令面
 
 - `cbma init`
 - `cbma doctor`
@@ -16,9 +25,11 @@ The workflow layer is the primary interface. It is designed for offline executio
 - `cbma eval run`
 - `cbma report build`
 
-## Project Layout
+## Project Layout / 项目结构
 
 `cbma init` creates a project with this shape:
+
+`cbma init` 会生成如下结构：
 
 ```text
 my_project/
@@ -43,48 +54,76 @@ my_project/
 
 The minimum required inputs are:
 
+最低要求的输入包括：
+
 - `project.yaml`
 - `data/codebook.yaml`
 - `data/labels.csv`
-- local video files referenced by `labels.csv`
+- local video files referenced by `labels.csv`  
+  `labels.csv` 中引用的本地视频文件
 
-## Workflow Stages
+## Execution Model / 运行方式
 
-### 1. Initialize
+- Offline execution  
+  离线运行
+- Local filesystem outputs  
+  结果写入本地文件系统
+- Dry-run friendly by default  
+  默认优先支持 dry-run
+- User-managed GPU environments for real inference and training  
+  真实推理和训练依赖用户自管 GPU 环境
 
-Create a local project skeleton with `cbma init`.
+Dry-run steps do not load models and usually do not require a GPU. Real evaluation and real training may require `torch`, `ffmpeg`, CUDA, and user-provided model paths.
 
-### 2. Validate
+dry-run 步骤不会加载模型，通常也不需要 GPU。真实评估和真实训练可能依赖 `torch`、`ffmpeg`、CUDA，以及用户自行提供的模型路径。
 
-Use `cbma doctor` for environment inspection and `cbma validate` for project, codebook, labels, and file checks.
+## Workflow / 工作流
 
-### 3. Split
+### 1. Initialize / 初始化
 
-Use `cbma split create` to build `train_pool.csv`, `test_main.csv`, optional `val_main.csv`, nested `train_<N>.csv`, and `split_summary.json`.
+Use `cbma init` to create a local project skeleton.  
+使用 `cbma init` 创建本地项目骨架。
 
-### 4. Baseline
+### 2. Validate / 校验
 
-Use `cbma baseline run --dry-run` first. This resolves script paths, split inputs, methods, and model paths without loading a model.
+Use `cbma doctor` for environment inspection and `cbma validate` for project, codebook, labels, and file checks.  
+用 `cbma doctor` 检查环境，用 `cbma validate` 检查项目结构、codebook、标签和文件路径。
 
-### 5. Train Sweep
+### 3. Split / 划分
 
-Use `cbma train sweep --dry-run` first. This resolves candidate sizes, output locations, and backend script wiring.
+Use `cbma split create` to generate `train_pool.csv`, `test_main.csv`, optional `val_main.csv`, nested `train_<N>.csv`, and `split_summary.json`.  
+用 `cbma split create` 生成 `train_pool.csv`、`test_main.csv`、可选的 `val_main.csv`、嵌套的 `train_<N>.csv` 以及 `split_summary.json`。
 
-### 6. Recommend N
+### 4. Baseline / Baseline
 
-Use `cbma train recommend-n` to convert a sweep run plus validation metrics into a `recommend_n.json` decision artifact.
+Use `cbma baseline run --dry-run` first. It resolves script paths, split inputs, methods, and model paths without loading a model.  
+建议先运行 `cbma baseline run --dry-run`。它会解析脚本路径、split 输入、baseline 方法和模型路径，但不会真正加载模型。
 
-### 7. Evaluation
+### 5. Train Sweep / 训练规模 Sweep
 
-Use `cbma eval run` after `recommend_n.json` has been generated and the corresponding model outputs are available locally.
+Use `cbma train sweep --dry-run` first. It resolves candidate sizes, output locations, and backend script wiring.  
+建议先运行 `cbma train sweep --dry-run`。它会解析候选训练规模、输出位置和后端脚本连接方式。
 
-### 8. Report
+### 6. Recommend N / 推荐训练规模
 
-Use `cbma report build` to build a standardized report directory from an existing eval run. This step is CPU-only and does not call a model.
+Use `cbma train recommend-n` to convert a sweep run plus validation metrics into a `recommend_n.json` decision artifact.  
+使用 `cbma train recommend-n` 将某次 sweep run 和其验证指标转换成 `recommend_n.json` 决策产物。
 
-## Run Outputs
+### 7. Evaluation / 评估
+
+Use `cbma eval run` after `recommend_n.json` has been generated and the corresponding local model outputs are available.  
+在 `recommend_n.json` 已生成，且对应本地模型产物可用之后，使用 `cbma eval run` 进行标准化评估。
+
+### 8. Report / 报告
+
+Use `cbma report build` to build a standardized report directory from an existing eval run. This step is CPU-only and does not call a model.  
+使用 `cbma report build` 从现有 eval run 构建标准化报告目录。这个步骤只做结果整理，不调用模型，也不依赖 GPU。
+
+## Output Structure / 输出结构
 
 The workflow writes timestamped run directories under `runs/`:
+
+workflow 会在 `runs/` 下写入带时间戳的运行目录：
 
 ```text
 runs/
@@ -92,6 +131,7 @@ runs/
     baseline_run.json
   train-sweep-YYYYMMDD-HHMMSS/
     train_sweep.json
+    recommend_n.json           # when generated
   eval-YYYYMMDD-HHMMSS/
     eval_result.json
     eval_metadata.json
@@ -102,27 +142,29 @@ runs/
       run_summary.json
 ```
 
-These directories are for traceability first. Optional downstream files depend on what the backend scripts emit.
+These directories exist for traceability first. Optional downstream files depend on what the backend scripts actually emit.
 
-## Dry-Run Versus Real Run
+这些目录首先是为了追溯性而存在的。更多可选文件是否出现，取决于底层后端脚本实际产出了什么。
 
-Dry-run mode:
+## Open-Source Boundaries / 开源边界
 
-- resolves paths
-- validates expected split files
-- writes metadata
-- does not load models
-- does not require a GPU
+This directory is not:
 
-Real run mode:
+- a hosted service backend  
+  不是托管服务后端
+- a multi-user platform  
+  不是多用户平台
+- a web-first application  
+  不是 web-first 应用
 
-- imports backend release scripts
-- may require `torch`, `ffmpeg`, and CUDA
-- depends on user-managed model paths
-- is intended for AutoDL or comparable environments
+`src/cbma/ui_api/` remains in the repository as a frozen experimental module and is not part of the maintained V1 core.  
+`src/cbma/ui_api/` 仍然保留在仓库中，但它只是冻结的实验模块，不属于当前维护的 V1 core。
 
-## Scope Boundary
+## Current Limits / 当前限制
 
-This directory is not a hosted service backend, multi-user platform, or web-first application.
-
-`src/cbma/ui_api/` remains in the repository as a frozen experimental module and is not part of the V1 core.
+- `recommend-n` requires validation metrics already materialized in the sweep run directory  
+  `recommend-n` 依赖 train-sweep run 目录中已经存在的验证指标聚合文件
+- real evaluation still depends on backend script outputs and local model artifacts  
+  真实评估仍然依赖后端脚本产物和本地模型文件
+- report enhancement depends on whether `raw_eval` artifacts exist  
+  report 的增强分析依赖 `raw_eval` 产物是否存在
